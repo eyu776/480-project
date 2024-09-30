@@ -13,7 +13,7 @@ class GachaDataset(Dataset):
     def __len__(self):
         return len(self.data)
     
-    def __getitem(self, idx):
+    def __getitem__(self, idx):
         data = self.data[idx]
         label = self.labels[idx]
         
