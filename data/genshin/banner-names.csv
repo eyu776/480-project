@@ -1,116 +1,117 @@
-1.0a venti
-1.0b klee
-1.1a tartaglia
-1.1b zhongli
-1.2a albedo
-1.2b ganyu
-1.3a xiao
-1.3b keqing
-1.3b hutao
-1.4a venti
-1.4b tartaglia
-1.5a zhongli
-1.5b eula
-1.6a klee
-1.6b kazuha
-2.0a ayaka
-2.0b yoimiya
-2.1a raiden
-2.1b kokomi
-2.2a tartaglia
-2.2b hutao
-2.3a albedo
-2.3a eula
-2.3b itto
-2.4a shenhe
-2.4a xiao
-2.4b zhongli
-2.4b ganyu
-2.5a yae miko
-2.5b raiden
-2.5b kokomi
-2.6a ayato
-2.6a venti
-2.6b ayaka
-2.7a yelan
-2.7a xiao
-2.7b itto
-2.8a kazuha
-2.8a klee
-2.8b yoimiya
-3.0a tighnari
-3.0a zhongli
-3.0b ganyu
-3.0b kokomi
-3.1a cyno
-3.1a venti
-3.1b nilou
-3.1b albedo
-3.2a nahida
-3.2a yoimiya
-3.2b yae miko
-3.2b tartaglia
-3.3a wanderer
-3.3a itto
-3.3b raiden
-3.3b ayato
-3.4a alhaitham
-3.4a xiao
-3.4b hutao
-3.4b yelan
-3.5a dehya
-3.5a cyno
-3.5b shenhe
-3.5b ayaka
-3.6a nahida
-3.6a nilou
-3.6b baizhu
-3.6b ganyu
-3.7a yoimiya
-3.7a yae miko
-3.7b alhaitham
-3.7b kazuha
-3.8a eula
-3.8a klee
-3.8b kokomi
-3.8b wanderer
-4.0a lyney
-4.0a yelan
-4.0b zhongli
-4.0b tartaglia
-4.1a neuvillette
-4.1a hutao
-4.1b wriothesley
-4.1b venti
-4.2a furina
-4.2a baizhu
-4.2b cyno
-4.2b ayato
-4.3a navia
-4.3a ayaka
-4.3b raiden
-4.3b yoimiya
-4.4a xianyun
-4.4a nahida
-4.4b xiao
-4.4b yae miko
-4.5a chiori
-4.5a itto
-4.5b neuvillette
-4.5b kazuha
-4.6a arlecchino
-4.6a lyney
-4.6b wanderer
-4.6b baizhu
-4.7a clorinde
-4.7a alhaitham
-4.7b sigewinne
-4.7b furina
-4.8a navia
-4.8a nilou
-4.8b emile
-4.8b yelan
-5.0a mualani
-5.0a kazuha
-5.0b kinich
-5.0b raiden
+num,name
+0,venti
+1,klee
+2,tartaglia
+3,zhongli
+4,albedo
+5,ganyu
+6,xiao
+7,keqing
+8,hutao
+0,venti
+2,tartaglia
+3,zhongli
+9,eula
+1,klee
+10,kazuha
+11,ayaka
+12,yoimiya
+13,raiden
+14,kokomi
+2,tartaglia
+8,hutao
+4,albedo
+9,eula
+15,itto
+16,shenhe
+6,xiao
+3,zhongli
+5,ganyu
+17,yae miko
+13,raiden
+14,kokomi
+18,ayato
+0,venti
+11,ayaka
+19,yelan
+6,xiao
+15,itto
+10,kazuha
+1,klee
+12,yoimiya
+20,tighnari
+3,zhongli
+5,ganyu
+14,kokomi
+21,cyno
+0,venti
+22,nilou
+4,albedo
+23,nahida
+12,yoimiya
+17,yae miko
+2,tartaglia
+24,wanderer
+15,itto
+13,raiden
+18,ayato
+25,alhaitham
+6,xiao
+8,hutao
+19,yelan
+26,dehya
+21,cyno
+16,shenhe
+11,ayaka
+23,nahida
+22,nilou
+27,baizhu
+5,ganyu
+12,yoimiya
+17,yae miko
+25,alhaitham
+10,kazuha
+9,eula
+1,klee
+14,kokomi
+24,wanderer
+28,lyney
+19,yelan
+3,zhongli
+2,tartaglia
+29,neuvillette
+8,hutao
+30,wriothesley
+0,venti
+31,furina
+27,baizhu
+21,cyno
+18,ayato
+32,navia
+11,ayaka
+13,raiden
+12,yoimiya
+33,xianyun
+23,nahida
+6,xiao
+17,yae miko
+34,chiori
+15,itto
+29,neuvillette
+10,kazuha
+35,arlecchino
+28,lyney
+24,wanderer
+27,baizhu
+36,clorinde
+25,alhaitham
+37,sigewinne
+31,furina
+32,navia
+22,nilou
+38,emile
+19,yelan
+39,mualani
+10,kazuha
+40,kinich
+13,raiden
