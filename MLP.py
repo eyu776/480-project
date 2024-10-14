@@ -92,7 +92,7 @@ with torch.no_grad():
         outputs = model(data)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
-        correct += (predicted ==labels).sum().item()
+        correct += (predicted == labels).sum().item()
         all_predictions += predicted.tolist()
         all_labels += labels.tolist()
 
