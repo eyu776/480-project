@@ -5,7 +5,6 @@ import torch.optim as optim
 import torch.nn as nn
 import torch
 import pandas as pd
-from sklearn.metrics import accuracy_score
 import numpy as np
 
 # read csv
@@ -26,15 +25,21 @@ def create_dataset(data, window):
         target = data[i+1:i+window+1]
         features.append(feat)
         targets.append(target)
-    return torch.tensor(features), torch.tensor(targets)
+
+    features_tensor = torch.tensor(features)
+    features_tensor = nn.functional.normalize(features_tensor, dim=0)
+    targets_tensor = torch.tensor(targets)
+    targets_tensor = nn.functional.normalize(targets_tensor, dim=0)
+
+    return features_tensor, targets_tensor
 
 # we don't shuffle with time series prediction problems
-window = 1
+window = 4
 train_data_features, train_data_targets = create_dataset(train_data_csv, window=window)
 test_data_features, test_data_targets = create_dataset(test_data_csv, window=window)
 
-print(train_data_features.shape, train_data_targets.shape)
-print(test_data_features.shape, test_data_targets.shape)
+# print(train_data_features.shape, train_data_targets.shape)
+# print(test_data_features.shape, test_data_targets.shape)
 
 # define neural network model
 # using a long short term memory model since to predict the immediate next banner, i need all of the previous data
@@ -54,18 +59,19 @@ class LSTM_Model(nn.Module):
 input_size = 7
 hidden_size = 49
 output_size = 7
-num_epochs = 100
-num_layers = 1
+num_epochs = 200
+num_layers = 7
 batch_first = True
 
 # instantiate model
 model = LSTM_Model(input_size, hidden_size, num_layers, batch_first, output_size)
-criterion = nn.CrossEntropyLoss()
+# criterion = nn.CrossEntropyLoss()
+criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # load data
 train_dataloader = DataLoader(TensorDataset(train_data_features, train_data_targets), shuffle=True, batch_size=8)
-test_dataloader = DataLoader(TensorDataset(test_data_features, test_data_targets), shuffle=False, batch_size=2)
+test_dataloader = DataLoader(TensorDataset(test_data_features, test_data_targets), shuffle=False, batch_size=8)
 
 # training
 for epoch in range(num_epochs):
@@ -86,12 +92,27 @@ with torch.no_grad():
     correct = total = 0
     all_predictions, all_targets = [], []
     for features, targets in test_dataloader:
-        output = model(features)
-        _, predicted = torch.max(output.data, 1)
-        total += targets.size(0)
-        correct += (predicted == targets).sum().item()
+        predicted = model(features)
+        # _, predicted = torch.max(output.data, 1)
+        # total += targets.size(0)
+
+        predicted = torch.flatten(predicted)
+        targets = torch.flatten(targets)
+        # print(f"predicted: {predicted}")
+
+        # correct += (predicted == targets).sum().item()
         all_predictions += predicted.tolist()
         all_targets += targets.tolist()
 
-    accuracy = 100 * correct / total
-    print(f"Accuracy: {accuracy_score(all_targets, all_predictions) * 100:.2f}%")
+    # accuracy = 100 * correct / total
+    # print(f"all_predictions: {all_predictions}")
+    # print(f"all_targets: {all_targets}")
+    print(f"all_predictions.shape: {torch.tensor(all_predictions).shape}")
+    print(f"all_targets.shape: {torch.tensor(all_targets).shape}")
+    print("all_predictions")
+    print(torch.tensor(all_predictions))
+    print("all_targets")
+    print(torch.tensor(all_targets))
+    # print(f"Accuracy: {accuracy_score(all_targets, all_predictions) * 100:.2f}%")
+    rmse = torch.sqrt(criterion(torch.tensor(all_predictions), torch.tensor(all_targets)))
+    print(f"RMSE: {rmse:.2f}")
