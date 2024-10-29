@@ -34,7 +34,7 @@ def create_dataset(data, window):
     return features_tensor, targets_tensor
 
 # we don't shuffle with time series prediction problems
-window = 4
+window = 1
 train_data_features, train_data_targets = create_dataset(train_data_csv, window=window)
 test_data_features, test_data_targets = create_dataset(test_data_csv, window=window)
 
@@ -57,17 +57,17 @@ class LSTM_Model(nn.Module):
     
 # define constants
 input_size = 7
-hidden_size = 49
+hidden_size = 35
 output_size = 7
 num_epochs = 200
-num_layers = 7
+num_layers = 3
 batch_first = True
 
 # instantiate model
 model = LSTM_Model(input_size, hidden_size, num_layers, batch_first, output_size)
 # criterion = nn.CrossEntropyLoss()
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.00075)
 
 # load data
 train_dataloader = DataLoader(TensorDataset(train_data_features, train_data_targets), shuffle=True, batch_size=8)
