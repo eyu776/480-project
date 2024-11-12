@@ -8,14 +8,10 @@ import pandas as pd
 import numpy as np
 
 # read csv
-train_data_csv = pd.read_csv("./data/genshin/genshin-data.csv", usecols=["double_banner", "rerun_banner", "element", "weapon", "archon", "nation", "build"])
-# train_labels_csv = pd.read_csv("./data/genshin/banner-names.csv", usecols=["num", "name"])
-test_data_csv = pd.read_csv("./data/genshin/test-genshin-data.csv", usecols=["double_banner", "rerun_banner", "element", "weapon", "archon", "nation", "build"])
-# test_labels_csv = pd.read_csv("./data/genshin/test-banner-names.csv", usecols=["num", "name"])
+data_csv = pd.read_csv("./data/enstars/enstars_data.csv", usecols=["banner"])
 
 # convert data to array
-train_data_csv = train_data_csv.to_numpy().astype("float32")
-test_data_csv = test_data_csv.to_numpy().astype("float32")
+data_csv = data_csv.to_numpy().astype("float32")
 
 # create tensors of the data and the window to lookback in for our LSTM
 def create_dataset(data, window):
@@ -34,9 +30,10 @@ def create_dataset(data, window):
     return features_tensor, targets_tensor
 
 # we don't shuffle with time series prediction problems
-window = 1
-train_data_features, train_data_targets = create_dataset(train_data_csv, window=window)
-test_data_features, test_data_targets = create_dataset(test_data_csv, window=window)
+window = 4
+train_size = int(len(data_csv) * 0.7)
+train_data_features, train_data_targets = create_dataset(data_csv[:train_size], window=window)
+test_data_features, test_data_targets = create_dataset(data_csv[train_size:], window=window)
 
 # print(train_data_features.shape, train_data_targets.shape)
 # print(test_data_features.shape, test_data_targets.shape)
@@ -56,22 +53,22 @@ class LSTM_Model(nn.Module):
         return x
     
 # define constants
-input_size = 7
-hidden_size = 35
-output_size = 7
-num_epochs = 200
-num_layers = 3
+input_size = 1
+hidden_size = 256
+output_size = 1
+num_epochs = 300
+num_layers = 4
 batch_first = True
 
 # instantiate model
 model = LSTM_Model(input_size, hidden_size, num_layers, batch_first, output_size)
 # criterion = nn.CrossEntropyLoss()
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.00075)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # load data
-train_dataloader = DataLoader(TensorDataset(train_data_features, train_data_targets), shuffle=True, batch_size=8)
-test_dataloader = DataLoader(TensorDataset(test_data_features, test_data_targets), shuffle=False, batch_size=8)
+train_dataloader = DataLoader(TensorDataset(train_data_features, train_data_targets), shuffle=True, batch_size=64)
+test_dataloader = DataLoader(TensorDataset(test_data_features, test_data_targets), shuffle=False, batch_size=16)
 
 # training
 for epoch in range(num_epochs):
@@ -86,33 +83,32 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-# testing
+        if epoch % 100 != 0:
+            continue
+        model.eval()
+        with torch.no_grad():
+            y_pred = model(train_data_features)
+            train_rmse = np.sqrt(criterion(y_pred, train_data_targets))
+            y_pred = model(test_data_features)
+            test_rmse = np.sqrt(criterion(y_pred, test_data_targets))
+            print("Epoch %d: train RMSE %.4f, test RMSE %.4f" % (epoch, train_rmse, test_rmse))
+
 model.eval()
 with torch.no_grad():
     correct = total = 0
     all_predictions, all_targets = [], []
     for features, targets in test_dataloader:
         predicted = model(features)
-        # _, predicted = torch.max(output.data, 1)
-        # total += targets.size(0)
 
         predicted = torch.flatten(predicted)
         targets = torch.flatten(targets)
-        # print(f"predicted: {predicted}")
 
-        # correct += (predicted == targets).sum().item()
         all_predictions += predicted.tolist()
         all_targets += targets.tolist()
 
-    # accuracy = 100 * correct / total
-    # print(f"all_predictions: {all_predictions}")
-    # print(f"all_targets: {all_targets}")
-    print(f"all_predictions.shape: {torch.tensor(all_predictions).shape}")
-    print(f"all_targets.shape: {torch.tensor(all_targets).shape}")
-    print("all_predictions")
-    print(torch.tensor(all_predictions))
-    print("all_targets")
-    print(torch.tensor(all_targets))
-    # print(f"Accuracy: {accuracy_score(all_targets, all_predictions) * 100:.2f}%")
+    # print("all_targets")
+    # print(torch.tensor(all_targets))
+    # print("all_predictions")
+    # print(torch.tensor(all_predictions))
     rmse = torch.sqrt(criterion(torch.tensor(all_predictions), torch.tensor(all_targets)))
-    print(f"RMSE: {rmse:.2f}")
+    print(f"RMSE: {rmse:.4f}")
