@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # read csv
 data_csv = pd.read_csv("./data/enstars/enstars_data.csv", usecols=["banner"])
@@ -23,17 +24,51 @@ def create_dataset(data, window):
         targets.append(target)
 
     features_tensor = torch.tensor(features)
-    features_tensor = nn.functional.normalize(features_tensor, dim=0)
+    # features_tensor = nn.functional.normalize(features_tensor, dim=0)
     targets_tensor = torch.tensor(targets)
-    targets_tensor = nn.functional.normalize(targets_tensor, dim=0)
+    # targets_tensor = nn.functional.normalize(targets_tensor, dim=0)
 
     return features_tensor, targets_tensor
+
+# # manual normalization
+# def normalize(arr, b, a):
+#     for i, n in enumerate(arr):
+#         arr[i] = (n - a) / (b - a)
+
+# # manual denormalization 
+# def denormalize(arr, b, a):
+#     for i, n in enumerate(arr):
+#         arr[i] = a + (b - a) * n
+
+# manual normalization
+def normalize(arr, mean, std):
+    for i, n in enumerate(arr):
+        arr[i] = (n - mean) / std
+
+# manual denormalization 
+def denormalize(arr, mean, std):
+    for i, n in enumerate(arr):
+        arr[i] = (n * std) + mean
 
 # we don't shuffle with time series prediction problems
 window = 4
 train_size = int(len(data_csv) * 0.7)
-train_data_features, train_data_targets = create_dataset(data_csv[:train_size], window=window)
-test_data_features, test_data_targets = create_dataset(data_csv[train_size:], window=window)
+train_data_csv = data_csv[:train_size]
+test_data_csv = data_csv[train_size:]
+
+# train_max, train_min = train_data_csv.max(), train_data_csv.min()
+# test_max, test_min = test_data_csv.max(), test_data_csv.min()
+train_mean, train_std = train_data_csv.mean().item(), train_data_csv.std().item()
+test_mean, test_std = test_data_csv.mean().item(), test_data_csv.std().item()
+
+# normalize(train_data_csv, train_max, train_min)
+# normalize(test_data_csv, test_max, test_min)
+
+normalize(train_data_csv, train_mean, train_std)
+normalize(test_data_csv, test_mean, test_std)
+
+train_data_features, train_data_targets = create_dataset(train_data_csv, window=window)
+test_data_features, test_data_targets = create_dataset(test_data_csv, window=window)
 
 # print(train_data_features.shape, train_data_targets.shape)
 # print(test_data_features.shape, test_data_targets.shape)
@@ -56,8 +91,8 @@ class LSTM_Model(nn.Module):
 input_size = 1
 hidden_size = 256
 output_size = 1
-num_epochs = 300
-num_layers = 4
+num_epochs = 200
+num_layers = 5
 batch_first = True
 
 # instantiate model
@@ -93,10 +128,9 @@ for epoch in range(num_epochs):
             test_rmse = np.sqrt(criterion(y_pred, test_data_targets))
             print("Epoch %d: train RMSE %.4f, test RMSE %.4f" % (epoch, train_rmse, test_rmse))
 
+all_predictions, all_targets = [], []
 model.eval()
 with torch.no_grad():
-    correct = total = 0
-    all_predictions, all_targets = [], []
     for features, targets in test_dataloader:
         predicted = model(features)
 
@@ -112,3 +146,16 @@ with torch.no_grad():
     # print(torch.tensor(all_predictions))
     rmse = torch.sqrt(criterion(torch.tensor(all_predictions), torch.tensor(all_targets)))
     print(f"RMSE: {rmse:.4f}")
+
+plt.plot(all_targets, c="b")
+plt.plot(all_predictions, c="r")
+
+denormalize(all_targets, test_mean, test_std)
+denormalize(all_predictions, test_mean, test_std)
+
+print("all_targets")
+print(torch.tensor(all_targets))
+print("all_predictions")
+print(torch.tensor(all_predictions))
+
+plt.show()
