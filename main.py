@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from LSTM import LSTM_Model
 
 # the testing dataset
-data_file_path = "./data/enstars/enstars_data_test2.csv"
+data_file_path = "./data/enstars/enstars_data_test.csv"
 data_file_columns = ["banner"]
-data_names_path = "./data/enstars/enstars_names_test2.csv"
+data_names_path = "./data/enstars/enstars_names_test.csv"
 
 # the complete dataset of possible mappings of numbers to strings
 mapping_file_path = "./data/enstars/enstars_data.csv"
