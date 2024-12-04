@@ -103,6 +103,7 @@ with torch.no_grad():
 predictions = denormalize(predictions, test_mean, test_std)
 targets = denormalize(targets, test_mean, test_std)
 
+# actual values are blue, predicted values are red
 plt.plot(targets, c="b")
 plt.plot(predictions, c="r")
 
@@ -116,8 +117,8 @@ print("predictions")
 print(predictions_converted)
 
 print("\npredicted next banner --------------")
-# print(len(targets_converted[:len(targets_converted)-1]))
-# print(len(predictions_converted[:len(predictions_converted)-1]))
+print(len(targets_converted[:len(targets_converted)-1]))
+print(len(predictions_converted[:len(predictions_converted)-1]))
 print(predictions_converted[-1])
 
 plt.show()
