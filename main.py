@@ -117,8 +117,6 @@ print("predictions")
 print(predictions_converted)
 
 print("\npredicted next banner --------------")
-print(len(targets_converted[:len(targets_converted)-1]))
-print(len(predictions_converted[:len(predictions_converted)-1]))
 print(predictions_converted[-1])
 
 plt.show()
