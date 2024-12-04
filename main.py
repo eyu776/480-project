@@ -109,11 +109,11 @@ plt.plot(predictions, c="r")
 targets_converted = convertToString(targets)
 predictions_converted = convertToString(predictions)
 
-# print("targets")
-# print(targets_converted)
+print("targets")
+print(targets_converted)
 
-# print("predictions")
-# print(predictions_converted)
+print("predictions")
+print(predictions_converted)
 
 print("\npredicted next banner --------------")
 # print(len(targets_converted[:len(targets_converted)-1]))
