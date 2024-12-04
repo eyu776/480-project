@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 from LSTM import LSTM_Model
 
 # the testing dataset
-data_file_path = "./data/enstars/enstars_data_test.csv"
+data_file_path = "./data/enstars/enstars_data_test2.csv"
 data_file_columns = ["banner"]
-data_names_path = "./data/enstars/enstars_names_test.csv"
+data_names_path = "./data/enstars/enstars_names_test2.csv"
 
 # the complete dataset of possible mappings of numbers to strings
 mapping_file_path = "./data/enstars/enstars_data.csv"
@@ -103,6 +103,7 @@ with torch.no_grad():
 predictions = denormalize(predictions, test_mean, test_std)
 targets = denormalize(targets, test_mean, test_std)
 
+# actual values are blue, predicted values are red
 plt.plot(targets, c="b")
 plt.plot(predictions, c="r")
 
@@ -116,8 +117,8 @@ print("predictions")
 print(predictions_converted)
 
 print("\npredicted next banner --------------")
-# print(len(targets_converted[:len(targets_converted)-1]))
-# print(len(predictions_converted[:len(predictions_converted)-1]))
+print(len(targets_converted[:len(targets_converted)-1]))
+print(len(predictions_converted[:len(predictions_converted)-1]))
 print(predictions_converted[-1])
 
 plt.show()
