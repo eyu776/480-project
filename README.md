@@ -1,4 +1,9 @@
 # 480-project
+## Install project files
+```
+git clone git@github.com:eyu776/480-project.git
+```
+
 ## Installing Dependencies via Conda
 ```
 conda create -n {name} python=3.8
